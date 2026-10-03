@@ -1,79 +1,658 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Explora los planetas del Sistema Solar, sus órbitas interactivas en tiempo real y aprende sobre sus características astronómicas.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-    <title>Sistema Solar</title>
-
+    <title>Sistema Solar | Explorador Astronómico Interactivo</title>
 </head>
 <body>
-    <div class="header">  
-        <dev class="logo">
-            <img src="img/logo.png" alt="Logo del Sistema Solar">
-            <h1>Sistema Solar</h1>
-        </dev>
-        
-        <div>
-            <p>Bienvenido al Sistema Solar. Aquí puedes explorar los planetas y aprender más sobre ellos.</p>
-        </div>
+    <!-- Background Stars & Deep Space Nebula -->
+    <div class="stars-container" id="starsContainer"></div>
 
+    <!-- Header / Navigation Bar -->
+    <header class="header">
+        <div class="header-inner">
+            <div class="logo">
+                <img src="img/logo.png" alt="Logo del Sistema Solar" onerror="this.style.display='none'; this.nextElementSibling.classList.add('no-img');">
+                <span class="logo-text">Sistema Solar</span>
+            </div>
+
+            <nav class="nav-links">
+                <a href="#simulacion" class="nav-link active">Simulación Orbital</a>
+                <a href="#planetas" class="nav-link">Planetas y Datos</a>
+                <a href="#comparador" class="nav-link">Comparador</a>
+                <a href="#curiosidades" class="nav-link">Curiosidades</a>
+            </nav>
+
+            <div class="header-actions">
+                <a href="https://www.youtube.com/shorts/LOSCrYq0ZB4" target="_blank" rel="noopener noreferrer" class="btn-video" title="Ver video referente">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg>
+                    <span>Ver Video Referente</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Hero & Orbital Simulation Section -->
+        <section class="section-simulacion" id="simulacion">
+            <div class="simulacion-header">
+                <div class="simulacion-title-group">
+                    <span class="section-kicker">Modelo Dinámico en Tiempo Real</span>
+                    <h1 class="simulacion-title">Explorador del Sistema Solar</h1>
+                    <p class="simulacion-desc">Interactúa con las órbitas proporcionales de todos los planetas alrededor del Sol. Haz clic en cualquier cuerpo celeste para examinarlo o pausar el tiempo cósmico.</p>
+                </div>
+
+                <!-- Simulation Control Panel -->
+                <div class="sim-controls">
+                    <div class="control-group">
+                        <button id="btnPlayPause" class="btn-ctrl" title="Pausar / Reanudar órbitas">
+                            <span class="ctrl-icon" id="playIcon">⏸</span>
+                            <span id="playText">Pausar</span>
+                        </button>
+                        
+                        <div class="speed-selector">
+                            <span class="ctrl-label">Velocidad:</span>
+                            <div class="speed-buttons">
+                                <button class="btn-speed" data-speed="0.5">0.5×</button>
+                                <button class="btn-speed active" data-speed="1">1×</button>
+                                <button class="btn-speed" data-speed="2">2×</button>
+                                <button class="btn-speed" data-speed="4">4×</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <button id="btnPerspective" class="btn-ctrl" title="Cambiar a perspectiva 3D inclinada">
+                            <span class="ctrl-icon">🪐</span>
+                            <span id="perspectiveText">Vista 3D</span>
+                        </button>
+
+                        <button id="btnToggleOrbits" class="btn-ctrl active-toggle" title="Mostrar/ocultar líneas orbitales">
+                            <span>Órbitas</span>
+                        </button>
+
+                        <button id="btnToggleLabels" class="btn-ctrl active-toggle" title="Mostrar/ocultar nombres en órbita">
+                            <span>Etiquetas</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Solar System Orbital Canvas Viewport -->
+            <div class="orbit-viewport-container" id="orbitViewport">
+                <div class="zoom-controls">
+                    <button id="btnZoomIn" class="btn-zoom" title="Acercar">+</button>
+                    <button id="btnZoomReset" class="btn-zoom" title="Restablecer zoom">⊙</button>
+                    <button id="btnZoomOut" class="btn-zoom" title="Alejar">−</button>
+                </div>
+
+                <!-- Solar System Orbital Stage -->
+                <div class="container" id="solarStage">
+                    <!-- Sol Central (Punto de Referencia Gravitacional y Visual) -->
+                    <div class="Sol-wrapper" data-planet="Sol" title="El Sol (Centro del Sistema Solar)">
+                        <div class="Sol">
+                            <div class="sun-corona"></div>
+                        </div>
+                        <span class="planet-orbit-label">☀️ Sol</span>
+                    </div>
+
+                    <!-- Mercurio -->
+                    <div class="orbit Mercurio-orbit" data-orbit="Mercurio">
+                        <div class="body-wrapper Mercurio-wrapper" data-planet="Mercurio">
+                            <div class="Mercurio"></div>
+                            <span class="planet-orbit-label">Mercurio</span>
+                        </div>
+                    </div>
+
+                    <!-- Venus -->
+                    <div class="orbit Venus-orbit" data-orbit="Venus">
+                        <div class="body-wrapper Venus-wrapper" data-planet="Venus">
+                            <div class="Venus"></div>
+                            <span class="planet-orbit-label">Venus</span>
+                        </div>
+                    </div>
+
+                    <!-- Tierra + Luna -->
+                    <div class="orbit Tierra-orbit" data-orbit="Tierra">
+                        <div class="body-wrapper Tierra-wrapper" data-planet="Tierra">
+                            <div class="Tierra">
+                                <div class="earth-clouds"></div>
+                            </div>
+                            <div class="Luna-orbit">
+                                <div class="Luna"></div>
+                            </div>
+                            <span class="planet-orbit-label">Tierra</span>
+                        </div>
+                    </div>
+
+                    <!-- Marte -->
+                    <div class="orbit Marte-orbit" data-orbit="Marte">
+                        <div class="body-wrapper Marte-wrapper" data-planet="Marte">
+                            <div class="Marte"></div>
+                            <span class="planet-orbit-label">Marte</span>
+                        </div>
+                    </div>
+
+                    <!-- Cinturón de Asteroides -->
+                    <div class="asteroid-belt" id="asteroidBelt" title="Cinturón de Asteroides"></div>
+
+                    <!-- Júpiter -->
+                    <div class="orbit Jupiter-orbit" data-orbit="Jupiter">
+                        <div class="body-wrapper Jupiter-wrapper" data-planet="Jupiter">
+                            <div class="Jupiter">
+                                <div class="great-red-spot"></div>
+                            </div>
+                            <span class="planet-orbit-label">Júpiter</span>
+                        </div>
+                    </div>
+
+                    <!-- Saturno + Anillos -->
+                    <div class="orbit Saturno-orbit" data-orbit="Saturno">
+                        <div class="body-wrapper Saturno-wrapper" data-planet="Saturno">
+                            <div class="saturn-ring-container">
+                                <div class="saturn-ring-back"></div>
+                                <div class="Saturno"></div>
+                                <div class="saturn-ring-front"></div>
+                            </div>
+                            <span class="planet-orbit-label">Saturno</span>
+                        </div>
+                    </div>
+
+                    <!-- Urano + Anillos Tenues -->
+                    <div class="orbit Urano-orbit" data-orbit="Urano">
+                        <div class="body-wrapper Urano-wrapper" data-planet="Urano">
+                            <div class="urano-ring"></div>
+                            <div class="Urano"></div>
+                            <span class="planet-orbit-label">Urano</span>
+                        </div>
+                    </div>
+
+                    <!-- Neptuno -->
+                    <div class="orbit Neptuno-orbit" data-orbit="Neptuno">
+                        <div class="body-wrapper Neptuno-wrapper" data-planet="Neptuno">
+                            <div class="Neptuno"></div>
+                            <span class="planet-orbit-label">Neptuno</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Floating Quick Planet Bar -->
+                <div class="orbit-planet-bar">
+                    <span class="quick-nav-label">Enfoque rápido:</span>
+                    <div class="quick-planet-buttons" id="quickPlanetButtons">
+                        <button class="btn-quick-planet" data-target="Sol">☀️ Sol</button>
+                        <button class="btn-quick-planet" data-target="Mercurio">🟤 Mercurio</button>
+                        <button class="btn-quick-planet" data-target="Venus">🟡 Venus</button>
+                        <button class="btn-quick-planet" data-target="Tierra">🌍 Tierra</button>
+                        <button class="btn-quick-planet" data-target="Marte">🔴 Marte</button>
+                        <button class="btn-quick-planet" data-target="Jupiter">🟠 Júpiter</button>
+                        <button class="btn-quick-planet" data-target="Saturno">🪐 Saturno</button>
+                        <button class="btn-quick-planet" data-target="Urano">🔵 Urano</button>
+                        <button class="btn-quick-planet" data-target="Neptuno">🔷 Neptuno</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Planet Information & Exploration Section -->
+        <section class="section-planetas" id="planetas">
+            <div class="container-fluid">
+                <div class="section-header">
+                    <div>
+                        <span class="section-kicker">Catálogo Astronómico Detallado</span>
+                        <h2 class="section-title">Los Planetas del Sistema Solar</h2>
+                        <p class="section-subtitle">Información científica completa sobre los cuerpos celestes: dimensiones, composición, atmósferas y curiosidades astronómicas.</p>
+                    </div>
+
+                    <!-- Category Filters -->
+                    <div class="category-filters" id="planetFilters">
+                        <button class="filter-btn active" data-filter="all">Todos los Cuerpos (9)</button>
+                        <button class="filter-btn" data-filter="rocoso">Planetas Rocosos (4)</button>
+                        <button class="filter-btn" data-filter="gaseoso">Gigantes Gaseosos (2)</button>
+                        <button class="filter-btn" data-filter="hielo">Gigantes de Hielo (2)</button>
+                        <button class="filter-btn" data-filter="estrella">Estrella Central (1)</button>
+                    </div>
+                </div>
+
+                <!-- Planet Cards Grid -->
+                <div class="planet-list" id="planetGrid">
+                    <!-- Cards will be enhanced & rendered via HTML + JS -->
+                    
+                    <!-- Sol -->
+                    <article class="planet-card" data-category="estrella" data-id="Sol" id="card-Sol">
+                        <div class="card-header">
+                            <div class="planet-visual-avatar visual-sol">
+                                <div class="avatar-glow"></div>
+                            </div>
+                            <div class="card-title-group">
+                                <span class="planet-classification">Estrella Tipo G2V · Centro del Sistema</span>
+                                <h3 class="planet-name">El Sol</h3>
+                            </div>
+                        </div>
+                        <p class="planet-summary">Es el corazón de nuestro sistema planetario, conteniendo el 99.86% de toda la masa del Sistema Solar y proporcionando la energía que sustenta la vida en la Tierra.</p>
+                        
+                        <div class="planet-metrics-grid">
+                            <div class="metric-item">
+                                <span class="metric-label">Diámetro</span>
+                                <span class="metric-value">1,392,700 <small>km</small></span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">Temperatura Superficial</span>
+                                <span class="metric-value">5,500 <small>°C</small></span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">Masa</span>
+                                <span class="metric-value">333,000 <small>tierras</small></span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">Edad</span>
+                                <span class="metric-value">4.600 <small>Ma</small></span>
+                            </div>
+                        </div>
+
+                        <div class="card-footer">
+                            <button class="btn-details" onclick="openPlanetModal('Sol')">Ver Ficha Completa</button>
+                            <button class="btn-focus-sim" onclick="focusOnPlanet('Sol')">Enfocar en Órbita</button>
+                        </div>
+                    </article>
+
+                    <!-- Mercurio -->
+                    <article class="planet-card" data-category="rocoso" data-id="Mercurio" id="card-Mercurio">
+                        <div class="card-header">
+                            <div class="planet-visual-avatar visual-mercurio"></div>
+                            <div class="card-title-group">
+                                <span class="planet-classification">Planeta Rocoso · 1° desde el Sol</span>
+                                <h3 class="planet-name">Mercurio</h3>
+                            </div>
+                        </div>
+                        <p class="planet-summary">Es el planeta más cercano al Sol y el más pequeño del Sistema Solar. Su superficie rocosa y llena de cráteres se parece mucho a la de nuestra Luna.</p>
+                        
+                        <div class="planet-metrics-grid">
+                            <div class="metric-item">
+                                <span class="metric-label">Distancia al Sol</span>
+                                <span class="metric-value">57.9 <small>M km</small></span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">Periodo Orbital</span>
+                                <span class="metric-value">88 <small>días</small></span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">Diámetro</span>
+                                <span class="metric-value">4,879 <small>km</small></span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">Lunas</span>
+                                <span class="metric-value">0</span>
+                            </div>
+                        </div>
+
+                        <div class="card-footer">
+                            <button class="btn-details" onclick="openPlanetModal('Mercurio')">Ver Ficha Completa</button>
+                            <button class="btn-focus-sim" onclick="focusOnPlanet('Mercurio')">Enfocar en Órbita</button>
+                        </div>
+                    </article>
+
+                    <!-- Venus -->
+                    <article class="planet-card" data-category="rocoso" data-id="Venus" id="card-Venus">
+                        <div class="card-header">
+                            <div class="planet-visual-avatar visual-venus"></div>
+                            <div class="card-title-group">
+                                <span class="planet-classification">Planeta Rocoso · 2° desde el Sol</span>
+                                <h3 class="planet-name">Venus</h3>
+                            </div>
+                        </div>
+                        <p class="planet-summary">Conocido como el gemelo tóxico de la Tierra. Su densa atmósfera de dióxido de carbono atrapa el calor en un efecto invernadero desbocado, haciéndolo el planeta más caliente.</p>
+                        
+                        <div class="planet-metrics-grid">
+                            <div class="metric-item">
+                                <span class="metric-label">Distancia al Sol</span>
+                                <span class="metric-value">108.2 <small>M km</small></span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">Periodo Orbital</span>
+                                <span class="metric-value">224.7 <small>días</small></span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">Temperatura Media</span>
+                                <span class="metric-value">465 <small>°C</small></span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">Rotación</span>
+                                <span class="metric-value">Retrógrada</span>
+                            </div>
+                        </div>
+
+                        <div class="card-footer">
+                            <button class="btn-details" onclick="openPlanetModal('Venus')">Ver Ficha Completa</button>
+                            <button class="btn-focus-sim" onclick="focusOnPlanet('Venus')">Enfocar en Órbita</button>
+                        </div>
+                    </article>
+
+                    <!-- Tierra -->
+                    <article class="planet-card" data-category="rocoso" data-id="Tierra" id="card-Tierra">
+                        <div class="card-header">
+                            <div class="planet-visual-avatar visual-tierra"></div>
+                            <div class="card-title-group">
+                                <span class="planet-classification">Planeta Rocoso · 3° desde el Sol</span>
+                                <h3 class="planet-name">Tierra</h3>
+                            </div>
+                        </div>
+                        <p class="planet-summary">Nuestro hogar y el único oasis conocido con agua líquida superficial, atmósfera rica en oxígeno y un campo magnético protector que alberga millones de especies vivas.</p>
+                        
+                        <div class="planet-metrics-grid">
+                            <div class="metric-item">
+                                <span class="metric-label">Distancia al Sol</span>
+                                <span class="metric-value">149.6 <small>M km</small></span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">Periodo Orbital</span>
+                                <span class="metric-value">365.25 <small>días</small></span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">Diámetro</span>
+                                <span class="metric-value">12,742 <small>km</small></span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">Satélites</span>
+                                <span class="metric-value">1 <small>(Luna)</small></span>
+                            </div>
+                        </div>
+
+                        <div class="card-footer">
+                            <button class="btn-details" onclick="openPlanetModal('Tierra')">Ver Ficha Completa</button>
+                            <button class="btn-focus-sim" onclick="focusOnPlanet('Tierra')">Enfocar en Órbita</button>
+                        </div>
+                    </article>
+
+                    <!-- Marte -->
+                    <article class="planet-card" data-category="rocoso" data-id="Marte" id="card-Marte">
+                        <div class="card-header">
+                            <div class="planet-visual-avatar visual-marte"></div>
+                            <div class="card-title-group">
+                                <span class="planet-classification">Planeta Rocoso · 4° desde el Sol</span>
+                                <h3 class="planet-name">Marte</h3>
+                            </div>
+                        </div>
+                        <p class="planet-summary">El planeta rojo, llamado así por el óxido de hierro en su suelo. Hogar del volcán más alto conocido (Monte Olimpo) y de valles colosales, es el principal foco de búsqueda de vida pasada.</p>
+                        
+                        <div class="planet-metrics-grid">
+                            <div class="metric-item">
+                                <span class="metric-label">Distancia al Sol</span>
+                                <span class="metric-value">227.9 <small>M km</small></span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">Periodo Orbital</span>
+                                <span class="metric-value">687 <small>días</small></span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">Diámetro</span>
+                                <span class="metric-value">6,779 <small>km</small></span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">Lunas</span>
+                                <span class="metric-value">2 <small>(Fobos, Deimos)</small></span>
+                            </div>
+                        </div>
+
+                        <div class="card-footer">
+                            <button class="btn-details" onclick="openPlanetModal('Marte')">Ver Ficha Completa</button>
+                            <button class="btn-focus-sim" onclick="focusOnPlanet('Marte')">Enfocar en Órbita</button>
+                        </div>
+                    </article>
+
+                    <!-- Júpiter -->
+                    <article class="planet-card" data-category="gaseoso" data-id="Jupiter" id="card-Jupiter">
+                        <div class="card-header">
+                            <div class="planet-visual-avatar visual-jupiter"></div>
+                            <div class="card-title-group">
+                                <span class="planet-classification">Gigante Gaseoso · 5° desde el Sol</span>
+                                <h3 class="planet-name">Júpiter</h3>
+                            </div>
+                        </div>
+                        <p class="planet-summary">El coloso del sistema solar. Posee una masa dos veces mayor que todos los demás planetas combinados, un colosal escudo magnético y la legendaria Gran Mancha Roja.</p>
+                        
+                        <div class="planet-metrics-grid">
+                            <div class="metric-item">
+                                <span class="metric-label">Distancia al Sol</span>
+                                <span class="metric-value">778.5 <small>M km</small></span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">Periodo Orbital</span>
+                                <span class="metric-value">11.86 <small>años</small></span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">Diámetro</span>
+                                <span class="metric-value">139,820 <small>km</small></span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">Lunas Confirmadas</span>
+                                <span class="metric-value">95</span>
+                            </div>
+                        </div>
+
+                        <div class="card-footer">
+                            <button class="btn-details" onclick="openPlanetModal('Jupiter')">Ver Ficha Completa</button>
+                            <button class="btn-focus-sim" onclick="focusOnPlanet('Jupiter')">Enfocar en Órbita</button>
+                        </div>
+                    </article>
+
+                    <!-- Saturno -->
+                    <article class="planet-card" data-category="gaseoso" data-id="Saturno" id="card-Saturno">
+                        <div class="card-header">
+                            <div class="planet-visual-avatar visual-saturno">
+                                <div class="avatar-saturn-ring"></div>
+                            </div>
+                            <div class="card-title-group">
+                                <span class="planet-classification">Gigante Gaseoso · 6° desde el Sol</span>
+                                <h3 class="planet-name">Saturno</h3>
+                            </div>
+                        </div>
+                        <p class="planet-summary">Famoso por su deslumbrante y complejo sistema de anillos compuestos de hielo y roca. Es el único planeta cuya densidad media es menor que la del agua.</p>
+                        
+                        <div class="planet-metrics-grid">
+                            <div class="metric-item">
+                                <span class="metric-label">Distancia al Sol</span>
+                                <span class="metric-value">1,433 <small>M km</small></span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">Periodo Orbital</span>
+                                <span class="metric-value">29.45 <small>años</small></span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">Diámetro</span>
+                                <span class="metric-value">116,460 <small>km</small></span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">Lunas Confirmadas</span>
+                                <span class="metric-value">146</span>
+                            </div>
+                        </div>
+
+                        <div class="card-footer">
+                            <button class="btn-details" onclick="openPlanetModal('Saturno')">Ver Ficha Completa</button>
+                            <button class="btn-focus-sim" onclick="focusOnPlanet('Saturno')">Enfocar en Órbita</button>
+                        </div>
+                    </article>
+
+                    <!-- Urano -->
+                    <article class="planet-card" data-category="hielo" data-id="Urano" id="card-Urano">
+                        <div class="card-header">
+                            <div class="planet-visual-avatar visual-urano"></div>
+                            <div class="card-title-group">
+                                <span class="planet-classification">Gigante de Hielo · 7° desde el Sol</span>
+                                <h3 class="planet-name">Urano</h3>
+                            </div>
+                        </div>
+                        <p class="planet-summary">Un gigante helado con un eje de rotación casi perpendicular al plano orbital (inclinación de 98°), rodando de lado alrededor del Sol como una bola en su órbita de 84 años.</p>
+                        
+                        <div class="planet-metrics-grid">
+                            <div class="metric-item">
+                                <span class="metric-label">Distancia al Sol</span>
+                                <span class="metric-value">2,872 <small>M km</small></span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">Periodo Orbital</span>
+                                <span class="metric-value">84.0 <small>años</small></span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">Temperatura Mínima</span>
+                                <span class="metric-value">-224 <small>°C</small></span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">Lunas</span>
+                                <span class="metric-value">28</span>
+                            </div>
+                        </div>
+
+                        <div class="card-footer">
+                            <button class="btn-details" onclick="openPlanetModal('Urano')">Ver Ficha Completa</button>
+                            <button class="btn-focus-sim" onclick="focusOnPlanet('Urano')">Enfocar en Órbita</button>
+                        </div>
+                    </article>
+
+                    <!-- Neptuno -->
+                    <article class="planet-card" data-category="hielo" data-id="Neptuno" id="card-Neptuno">
+                        <div class="card-header">
+                            <div class="planet-visual-avatar visual-neptuno"></div>
+                            <div class="card-title-group">
+                                <span class="planet-classification">Gigante de Hielo · 8° desde el Sol</span>
+                                <h3 class="planet-name">Neptuno</h3>
+                            </div>
+                        </div>
+                        <p class="planet-summary">El planeta más distante y oscuro del sistema solar. Posee los vientos supersónicos más veloces jamás registrados (superando los 2,100 km/h) y un intenso tono azul metano.</p>
+                        
+                        <div class="planet-metrics-grid">
+                            <div class="metric-item">
+                                <span class="metric-label">Distancia al Sol</span>
+                                <span class="metric-value">4,495 <small>M km</small></span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">Periodo Orbital</span>
+                                <span class="metric-value">164.8 <small>años</small></span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">Diámetro</span>
+                                <span class="metric-value">49,244 <small>km</small></span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">Lunas</span>
+                                <span class="metric-value">16 <small>(Tritón)</small></span>
+                            </div>
+                        </div>
+
+                        <div class="card-footer">
+                            <button class="btn-details" onclick="openPlanetModal('Neptuno')">Ver Ficha Completa</button>
+                            <button class="btn-focus-sim" onclick="focusOnPlanet('Neptuno')">Enfocar en Órbita</button>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- Side-by-Side Planet Comparison Tool -->
+        <section class="section-comparador" id="comparador">
+            <div class="container-fluid">
+                <div class="section-header text-center">
+                    <span class="section-kicker">Laboratorio de Astrofísica</span>
+                    <h2 class="section-title">Comparador de Cuerpos Celestes</h2>
+                    <p class="section-subtitle">Selecciona dos planetas para contrastar sus dimensiones, masas, temperaturas y periodos orbitales.</p>
+                </div>
+
+                <div class="comparison-tool">
+                    <div class="comparison-selectors">
+                        <div class="selector-box">
+                            <label for="selectPlanet1">Planeta A</label>
+                            <select id="selectPlanet1" class="planet-select"></select>
+                        </div>
+                        <div class="comparison-vs">VS</div>
+                        <div class="selector-box">
+                            <label for="selectPlanet2">Planeta B</label>
+                            <select id="selectPlanet2" class="planet-select"></select>
+                        </div>
+                    </div>
+
+                    <!-- Comparison Visual & Metric Display -->
+                    <div class="comparison-display" id="comparisonDisplay">
+                        <!-- Rendered by index.js -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Curiosidades y Trivia Astronómica -->
+        <section class="section-curiosidades" id="curiosidades">
+            <div class="container-fluid">
+                <div class="section-header">
+                    <div>
+                        <span class="section-kicker">¿Sabías que...?</span>
+                        <h2 class="section-title">Curiosidades Asombrosas del Cosmos</h2>
+                        <p class="section-subtitle">Datos y fenómenos extraordinarios que ocurren a diario en nuestro vecindario cósmico.</p>
+                    </div>
+                </div>
+
+                <div class="curiosidades-grid">
+                    <div class="curiosidad-card">
+                        <span class="curiosidad-number">01</span>
+                        <h3 class="curiosidad-title">Un día en Venus dura más que un año</h3>
+                        <p class="curiosidad-text">Venus tarda 243 días terrestres en rotar sobre su propio eje una sola vez, pero solo 225 días terrestres en completar una órbita completa alrededor del Sol.</p>
+                    </div>
+
+                    <div class="curiosidad-card">
+                        <span class="curiosidad-number">02</span>
+                        <h3 class="curiosidad-title">El Gran Volcán de Marte triplica al Everest</h3>
+                        <p class="curiosidad-text">El Monte Olimpo en Marte alcanza 21.9 km de altura y una base del tamaño de Francia, siendo el volcán escudo más colosal de todo el Sistema Solar.</p>
+                    </div>
+
+                    <div class="curiosidad-card">
+                        <span class="curiosidad-number">03</span>
+                        <h3 class="curiosidad-title">Saturno podría flotar en una bañera gigante</h3>
+                        <p class="curiosidad-text">La densidad promedio de Saturno es de apenas 0.687 g/cm³, significativamente menor que la densidad del agua pura (1.0 g/cm³).</p>
+                    </div>
+
+                    <div class="curiosidad-card">
+                        <span class="curiosidad-number">04</span>
+                        <h3 class="curiosidad-title">Júpiter tiene un océano de hidrógeno metálico</h3>
+                        <p class="curiosidad-text">A miles de kilómetros bajo sus nubes, la presión es tan descomunal que el gas hidrógeno se comprime en un líquido conductor con propiedades metálicas.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal for Detailed Planet Information -->
+    <div class="modal-overlay" id="planetModal" aria-hidden="true">
+        <div class="modal-container" role="dialog" aria-modal="true">
+            <button class="modal-close" id="modalClose" aria-label="Cerrar modal">✕</button>
+            <div class="modal-body" id="modalContent">
+                <!-- Dynamically populated via index.js -->
+            </div>
+        </div>
     </div>
-        
-        <div class="container">
-            <div class="Sol"></div>
-            <div class="Mercurio"></div>
-            <div class="Venus"></div>
-            <div class="Tierra">
-            <div class="Luna"></div>
-               
-            </div>
-            <div class="Marte"></div>
-            <div class="Jupiter"></div>
-            <div class="Saturno"></div>
-            <div class="Urano"></div>
-            <div class="Neptuno"></div>       
-        </div>
-        <div class="planet-list">
-            <div class="planet-1">
-                <h2>Mercurio</h2>
-                <p>Es el planeta más cercano al Sol y el más pequeño del Sistema Solar.</p>
-            </div>
-            <div class="planet-2">
-                <h2>Venus</h2>
-                <p>Es conocido por su densa atmósfera y su superficie extremadamente caliente.</p>
-            </div>
-            <div class="planet-3">
-                <h2>Tierra</h2>
-                <p>Es nuestro hogar y el único planeta conocido que alberga vida.</p>
-                <div class="satellite"></div>
-            </div>
-            <div class="planet-4">
-                <h2>Marte</h2>
-                <p>Es conocido como el planeta rojo, es un objetivo importante para la exploración espacial.</p>
-            </div> 
-            <div class="planet-5">
-                 <h2>Júpiter</h2>
-                 <p>Es el planeta más grande del Sistema Solar y tiene una gran cantidad de lunas.</p>  
-            </div>
-            <div class="planet-6">
-                     <h2>Saturno</h2>
-                     <p>Es famoso por sus impresionantes anillos y su gran tamaño.</p>
-            </div>
-            <div class="planet-7">
-                     <h2>Urano</h2>
-                     <p>Es un planeta gigante de hielo que gira sobre su eje de manera diferente a los demás planetas.</p>
-            </div>
-            <div class="planet-8">
-                     <h2>Neptuno</h2>
-                     <p>Es el planeta más lejano del Sistema Solar y es conocido por su fuerte viento y su color azul.</p>
-            </div>
-           
-            <a href="https://www.youtube.com/shorts/LOSCrYq0ZB4" target="_blank">Ver</a>
-<script src="index.js"></script>
-<footer>
-    <p>&copy; 2026 Sistema Solar. Todos los derechos reservados. Yerson Valenzuela</p>    
-</footer>
 
+    <!-- Footer with original attribution & video link -->
+    <footer class="footer">
+        <div class="footer-inner">
+            <div class="footer-brand">
+                <span class="footer-app-title">🪐 Sistema Solar Interactivo</span>
+                <p class="footer-copyright">&copy; 2026 Sistema Solar. Todos los derechos reservados. <strong>Yerson Valenzuela</strong></p>
+            </div>
+            <div class="footer-links">
+                <a href="https://www.youtube.com/shorts/LOSCrYq0ZB4" target="_blank" rel="noopener noreferrer" class="footer-link footer-video-badge">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg>
+                    <span>Ver Video Referente</span>
+                </a>
+                <a href="#simulacion" class="footer-link">Volver al inicio ↑</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="index.js"></script>
 </body>
 </html>
