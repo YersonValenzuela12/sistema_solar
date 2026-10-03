@@ -1,20 +1,18 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://ai.google.dev/static/site-assets/images/share-ais-513315318.png" />
-</div>
+## Sistema Solar 
+ proyecto creado con base de referencia a un video de youtube.
+  # simulacion Orbital
+  simulacion con planetas girando
 
-# Run and deploy your AI Studio app
+  # Planetas y Datos
+  muestra la informacion de los planetas y tiene filtro por cada tipos.
+   Tipos:
+   -Todos los cuerpos
+   -Planetas rocosos
+   -Grandes Gaciosos
+   -Gigantes de hielo
+   -Estrella central
+  # Comparador 
+  se compara dos elementos del sistema
+  # Curiosidades
+  4 curiosidades que debe conocer.
 
-This contains everything you need to run your app locally.
-
-View your app in AI Studio: https://ai.studio/apps/b17dd427-4567-4503-93ab-694d705457d5
-
-## Run Locally
-
-**Prerequisites:**  Node.js
-
-
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
