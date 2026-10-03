@@ -1,18 +1,19 @@
 ## Sistema Solar 
- proyecto creado con base de referencia a un video de youtube.
+ Proyecto creado con base de referencia a un video de youtube.
+ ![Portada](https://github.com/YersonValenzuela12/sistema_solar/img/Principal.png)
   # simulacion Orbital
-  simulacion con planetas girando
+  Simulacion con planetas girando en su orbita.
 
   # Planetas y Datos
   muestra la informacion de los planetas y tiene filtro por cada tipos.
-   Tipos:
-   -Todos los cuerpos
-   -Planetas rocosos
-   -Grandes Gaciosos
-   -Gigantes de hielo
-   -Estrella central
+   *  Tipos:
+   - **Todos los cuerpos**
+   - **Planetas rocosos**
+   - **Grandes Gaciosos**
+   - **Gigantes de hielo**
+   - **Estrella central**
   # Comparador 
-  se compara dos elementos del sistema
+   -Se compara dos elementos del sistema.
   # Curiosidades
-  4 curiosidades que debe conocer.
+   -4 curiosidades que debe conocer.
 
