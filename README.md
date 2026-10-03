@@ -1,7 +1,7 @@
 ## Sistema Solar 
  Proyecto creado con base de referencia a un video de youtube.
 
- ![](https://github.com/YersonValenzuela12/sistema_solar/img/Principal.jpg)
+ ![](https://github.com/YersonValenzuela12/sistema_solar/blob/main/img/Principal.jpg)
  
   # simulacion Orbital
   Simulacion con planetas girando en su orbita.
